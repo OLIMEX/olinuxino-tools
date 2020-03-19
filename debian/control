@@ -1,0 +1,12 @@
+Source: olinuxino-tools
+Section: misc
+Priority: optional
+Maintainer: Stefan Saraev <stefan@saraev.ca>
+Build-Depends: debhelper (>=9), dh-systemd
+Standards-Version: 4.1.4
+
+Package: olinuxino-tools
+Architecture: all
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: olinuxino-tools
+ olinuxino-tools: scripts

@@ -1,0 +1,36 @@
+stages:
+  - build
+  - deploy
+
+build:
+  stage: build
+  script:
+    - apt-get update
+    - apt-get install dh-systemd
+    - ./make_debian_changelog.sh
+    - dpkg-buildpackage -us -uc
+    - mkdir build
+    - mv ../olinuxino-tools*.deb build/
+  tags:
+    - build
+  artifacts:
+    paths:
+      - build/*
+
+deploy:staging:
+  stage: deploy
+  script:
+    - reprepro -b /var/www/html/staging --ignore=wrongdistribution includedeb buster build/olinuxino-tools*.deb
+    - reprepro -b /var/www/html/staging --ignore=wrongdistribution includedeb bionic build/olinuxino-tools*.deb
+    - reprepro -b /var/www/html/staging --ignore=wrongdistribution includedeb sid build/olinuxino-tools*.deb
+  tags:
+    - deploy
+
+deploy:repository:
+  stage: deploy
+  script:
+    - reprepro -b /var/www/html/repository --ignore=wrongdistribution includedeb buster build/olinuxino-tools*.deb
+    - reprepro -b /var/www/html/repository --ignore=wrongdistribution includedeb bionic build/olinuxino-tools*.deb
+    - reprepro -b /var/www/html/repository --ignore=wrongdistribution includedeb sid build/olinuxino-tools*.deb
+  tags:
+    - deploy

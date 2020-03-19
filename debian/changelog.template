@@ -1,0 +1,5 @@
+olinuxino-tools (1.0-VERSION) unstable; urgency=low
+
+  * Initial release. Closes: #nnnn
+
+ -- Stefan Saraev <stefan@saraev.ca>  Thu, 19 Mar 2020 12:12:48 +0200
