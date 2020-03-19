@@ -7,6 +7,6 @@ Standards-Version: 4.1.4
 
 Package: olinuxino-tools
 Architecture: all
-Depends: ${misc:Depends}, ${shlibs:Depends}
+Depends: ${misc:Depends}, ${shlibs:Depends}, i2c-tools
 Description: olinuxino-tools
  olinuxino-tools: scripts
