@@ -1,5 +1,22 @@
 #!/bin/bash
 
+function get_board_id
+{
+    local BOARD_ID=""
+    for comp in $(cat "/proc/device-tree/compatible" | tr '\0' '\n'); do
+	    if [[ "$comp" == "olimex,"* ]]; then
+		    BOARD_ID=$((16#$(i2cget -f -y 2 0x50 0x04 w 2>/dev/null | sed 's/0x//g')))
+		    if [ "${BOARD_ID}" == "0" ] ; then
+			BOARD_ID=""
+		    fi
+		    break
+	    fi
+    done
+
+    echo ${BOARD_ID}
+}
+
+
 function get_board
 {
     local BOARD=""
