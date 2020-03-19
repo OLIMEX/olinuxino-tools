@@ -4,5 +4,6 @@
 	dh $@  --with-systemd
 
 override_dh_installinit:
+	dh_systemd_enable --name=olinuxino-bluetooth olinuxino-bluetooth.service
 	dh_systemd_enable --name=olinuxino-expand olinuxino-expand.service
 	dh_systemd_enable --name=olinuxino-firstboot olinuxino-firstboot.service
