@@ -1,3 +1,5 @@
+spi1-spidev.dtbo
+spi2-spidev.dtbo
 sun7i-a20-i2c2.dtbo
 sun7i-a20-spi0.dtbo
 sun7i-a20-spi1.dtbo
