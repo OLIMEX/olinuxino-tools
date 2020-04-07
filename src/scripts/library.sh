@@ -1,5 +1,29 @@
 #!/bin/bash
 
+function enable_overlays
+{
+	# Detect SoC
+	_soc=$(get_soc)
+	[[ -z ${_soc} ]] && return 0
+
+	# Detect board type
+	_board_id=$(get_board_id)
+	[[ -z ${_board_id} ]] && return 0
+
+	# update uEnv.txt with default overlays
+	_board_defaults_file="/usr/share/olinuxino/default/overlays/${_board_id}"
+	if [ -f "${_board_defaults_file}" ] ; then
+		for _overlay in $(cat "${_board_defaults_file}"); do
+			_overlay="/usr/lib/olinuxino-overlays/${_soc}/${_overlay}"
+			[[ ! -f "${_overlay}" ]] && continue
+			[[ -z ${_overlays} ]] && _overlays="${_overlay}" || _overlays="${_overlays} ${_overlay}"
+		done
+		if [ -n "${_overlays}" ] ; then
+			sed -i 's#^fdtoverlays=$#fdtoverlays='"${_overlays}"'#g' /boot/uEnv.txt
+		fi
+	fi
+}
+
 function get_board_id
 {
     local BOARD_ID=""
