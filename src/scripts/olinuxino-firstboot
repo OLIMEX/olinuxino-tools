@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ROOT_DIR=$(dirname "$0")
+ROOT_DIR=$(dirname $(realpath "$0"))
 source ${ROOT_DIR}/library.sh
 
 # enable default overlays

@@ -2,7 +2,7 @@
 
 set -e
 
-ROOT_DIR=$(dirname "$0")
+ROOT_DIR=$(dirname $(realpath "$0"))
 source ${ROOT_DIR}/library.sh
 
 _root_partition=$(get_root_partition)
