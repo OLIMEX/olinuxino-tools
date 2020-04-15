@@ -1,6 +1,5 @@
 [Unit]
 Description=LCD-OLinuXino RTP calibrabion
-ConditionPathExists=/etc/X11/xorg.conf.d
 
 [Service]
 Type=oneshot

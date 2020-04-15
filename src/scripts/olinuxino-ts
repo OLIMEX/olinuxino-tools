@@ -21,6 +21,7 @@ case $LCD in
 esac
 
 # Generate configuration file
+mkdir -p /etc/X11/xorg.conf.d
 tee > /etc/X11/xorg.conf.d/98-screen-calibration.conf << __EOF__
 Section "InputClass"
 	Identifier	"calibration"
