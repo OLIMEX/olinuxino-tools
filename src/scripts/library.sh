@@ -215,17 +215,32 @@ function get_partition_start_block
     echo ${START}
 }
 
+function get_disklabel_type
+{
+    TYPE=$(fdisk -l $1 | grep "Disklabel type: " | awk '{print $3}')
+
+    echo ${TYPE}
+}
+
 function resize_partition
 {
     local PARTITION=$1
     local DEVICE=$(get_device_by_partition ${PARTITION})
 
-    local START=$(get_partition_start_block ${PARTITION})
-    local COUNT=$(fdisk -l "${DEVICE}" | grep -c "^${DEVICE}p")
+    local TYPE=$(get_disklabel_type "${DEVICE}")
+    if [ "${TYPE}" == "gpt" ] ; then
+        sgdisk -e "${DEVICE}"
+        sgdisk -d 4 "${DEVICE}"
+        sgdisk -N 4 "${DEVICE}"
+        partprobe "${DEVICE}"
+        sgdisk -A 4:set:2 "${DEVICE}"
+    else
+        local START=$(get_partition_start_block ${PARTITION})
+        local COUNT=$(fdisk -l "${DEVICE}" | grep -c "^${DEVICE}p")
 
-    # Commands are different for single and multi-partition devices
-    if [[ ${COUNT} -eq 1 ]]; then
-        fdisk "${DEVICE}" > /dev/null 2>&1 << __EOF__
+        # Commands are different for single and multi-partition devices
+        if [[ ${COUNT} -eq 1 ]]; then
+            fdisk "${DEVICE}" > /dev/null 2>&1 << __EOF__
 d
 n
 p
@@ -234,8 +249,8 @@ ${START}
 
 w
 __EOF__
-    else
-        fdisk "${DEVICE}" << __EOF__
+        else
+            fdisk "${DEVICE}" << __EOF__
 d
 ${PARTITION#${DEVICE}p}
 n
@@ -245,5 +260,6 @@ ${START}
 
 w
 __EOF__
+        fi
     fi
 }
