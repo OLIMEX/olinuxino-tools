@@ -1,0 +1,9 @@
+[Unit]
+Description=Olinuxino Defaults
+
+[Service]
+Type=idle
+ExecStart=-/usr/lib/olinuxino/olinuxino-defaults
+
+[Install]
+WantedBy=multi-user.target

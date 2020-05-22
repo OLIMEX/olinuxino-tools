@@ -1,0 +1,14 @@
+#!/bin/bash
+
+## a64
+amixer sset "AIF1 Slot 0 Digital DAC" "" on &>/dev/null
+
+## a20
+amixer sset "Power Amplifier DAC" "" on &>/dev/null
+amixer sset "Power Amplifier Mixer" "" on &>/dev/null
+amixer sset "Power Amplifier Mute" "" on &>/dev/null
+# amixer sset "Power Amplifier" "50" &>/dev/null
+
+alsactl store
+
+systemctl disable olinuxino-defaults.service
