@@ -1,13 +1,15 @@
 #!/bin/bash
 
-## a64
-amixer sset "AIF1 Slot 0 Digital DAC" "" on &>/dev/null
+for card in 0 1 ; do
+  ## a64
+  amixer -c $card sset "AIF1 Slot 0 Digital DAC" "" on &>/dev/null
 
-## a20
-amixer sset "Power Amplifier DAC" "" on &>/dev/null
-amixer sset "Power Amplifier Mixer" "" on &>/dev/null
-amixer sset "Power Amplifier Mute" "" on &>/dev/null
-# amixer sset "Power Amplifier" "50" &>/dev/null
+  ## a20
+  amixer -c $card sset "Power Amplifier DAC" "" on &>/dev/null
+  amixer -c $card sset "Power Amplifier Mixer" "" on &>/dev/null
+  amixer -c $card sset "Power Amplifier Mute" "" on &>/dev/null
+  # amixer -c $card sset "Power Amplifier" "50" &>/dev/null
+done
 
 alsactl store
 
