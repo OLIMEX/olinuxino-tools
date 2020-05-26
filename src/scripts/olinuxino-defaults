@@ -8,7 +8,7 @@ for card in 0 1 ; do
   amixer -c $card sset "Power Amplifier DAC" "" on &>/dev/null
   amixer -c $card sset "Power Amplifier Mixer" "" on &>/dev/null
   amixer -c $card sset "Power Amplifier Mute" "" on &>/dev/null
-  # amixer -c $card sset "Power Amplifier" "50" &>/dev/null
+  amixer -c $card sset "Power Amplifier" "60" &>/dev/null
 done
 
 alsactl store
