@@ -167,6 +167,12 @@ function get_emmc_device
     lsblk -l | grep "^mmcblk"[[:digit:]][[:digit:]]*[[:space:]] | grep -v ${ROOT_DEVICE#/*/} | awk '{print "/dev/"$1}'
 }
 
+function get_sata_device
+{
+    local ROOT_DEVICE=$(get_root_device)
+    lsblk -l | grep "^sda"* | grep -v ${ROOT_DEVICE#/*/} | awk '{print "/dev/"$1}' | head -n1
+}
+
 function get_device_block_count
 {
     blockdev --getsz $1
@@ -241,7 +247,13 @@ function resize_partition
         sgdisk -A 4:set:2 "${DEVICE}"
     else
         local START=$(get_partition_start_block ${PARTITION})
-        local COUNT=$(fdisk -l "${DEVICE}" | grep -c "^${DEVICE}p")
+        if [ "${DEVICE}" != "/dev/sda" ] ; then
+            local COUNT=$(fdisk -l "${DEVICE}" | grep -c "^${DEVICE}p")
+            local DEVICEP="${DEVICE}p"
+        else
+            local COUNT=$(fdisk -l "${DEVICE}" | grep -c "^${DEVICE}")
+            local DEVICEP="${DEVICE}"
+        fi
 
         # Commands are different for single and multi-partition devices
         if [[ ${COUNT} -eq 1 ]]; then
@@ -257,10 +269,10 @@ __EOF__
         else
             fdisk "${DEVICE}" << __EOF__
 d
-${PARTITION#${DEVICE}p}
+${PARTITION#${DEVICEP}}
 n
 p
-${PARTITION#${DEVICE}p}
+${PARTITION#${DEVICEP}}
 ${START}
 
 w

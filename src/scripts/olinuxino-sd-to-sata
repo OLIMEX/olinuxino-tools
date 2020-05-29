@@ -1,0 +1,139 @@
+#!/bin/bash
+
+EXCLUDE=("/dev/*" "/proc/*" "/sys/*" "/media/*" "/mnt/*" "/run/*" "/tmp/*")
+ROOT_DIR=$(dirname $(realpath "$0"))
+
+source ${ROOT_DIR}/library.sh
+
+function required_blocks
+{
+    _exclude=""
+    for e in "${EXCLUDE[@]}"; do
+        _exclude=${_exclude}" --exclude=${e}"
+    done
+
+    du -s --block-size=512 ${_exclude} / | awk '{print $1}'
+}
+
+echo -e "\nDetecting board..."
+for comp in $(cat "/proc/device-tree/compatible" | tr '\0' '\n'); do
+	if [[ "$comp" == "allwinner,sun"* ]]; then
+		_soc=$(cut -d',' -f2 <<< $comp)
+		break
+    fi
+done
+
+if [[ -z ${_soc} ]]; then
+    echo "Failed to detect the board type!" >&2
+    exit 1
+fi
+
+case ${_soc} in
+    "sun5i-a13")
+        _board="a13-olinuxino"
+        ;;
+    "sun7i-a20")
+        _board="a20-olinuxino"
+        ;;
+    "sun50i-a64")
+        _board="a64-olinuxino"
+        ;;
+    *)
+        echo "Unsupported board family: ${_soc}!" >&2
+        exit 1
+        ;;
+esac
+
+echo -e "\nDetecting the root device..."
+_root_partition=$(get_root_partition)
+if [[ -z ${_root_partition} ]]; then
+    echo "Failed to detect root partition!" >&2
+    exit 1
+fi
+
+_root_device=$(get_root_device)
+if [[ -z ${_root_device} ]]; then
+    echo "Failed to detect root device!" >&2
+    exit 1
+fi
+echo -e "Root partition:\t\t${_root_partition}"
+echo -e "Root device:\t\t${_root_device}"
+
+echo -e "\nDetecting SATA device..."
+_sata_device=$(get_sata_device)
+_sata_partition=${_sata_device}1
+
+if [[ -z ${_sata_device} ]]; then
+    echo "Failed to detect SATA device!" >&2
+    exit 1
+fi
+echo -e "SATA partition:\t\t${_sata_partition}"
+echo -e "SATA device:\t\t${_sata_device}"
+
+echo -e "\nChecking disk size..."
+_required=$(required_blocks)
+_available=$(get_device_block_count ${_sata_device})
+
+echo -e "Required blocks:\t${_required}"
+echo -e "Available blocks:\t${_available}"
+
+if [[ ${_available} -lt ${_required} ]]; then
+    echo "Not enough blocks to transfer the file-system!" >&2
+    exit 1
+fi
+
+echo -e "\nUnmount target device..."
+umount ${_sata_partition} || true
+sync
+
+echo -e "\nCopying MBR record..."
+dd if=/dev/zero of=${_sata_device} bs=1M count=1 conv=sync,fsync 2>/dev/null
+sync
+sfdisk -q -d ${_root_device} | sfdisk -q --wipe=always ${_sata_device}
+
+echo -e "\nResizing partition..."
+resize_partition ${_sata_partition}
+e2fsck -f -y ${_sata_partition}
+resize2fs ${_sata_partition}
+
+echo -e "\nFormating disk..."
+_type=$(get_partition_type ${_root_partition})
+if [[ "$_type" == "ext4" ]] ; then
+    opts="-O ^64bit,^metadata_csum"
+fi
+mkfs.${_type} $opts -F ${_sata_partition} > /dev/null 2>&1
+
+echo -e "\nCopying disk..."
+_mount=$(mktemp -d)
+mount ${_sata_partition} ${_mount}
+
+_exclude=""
+    for e in "${EXCLUDE[@]}"; do
+        _exclude=${_exclude}" --exclude=${e}"
+    done
+
+rsync -a --info=progress2 --delete ${_exclude} / ${_mount}
+
+echo -e "\nConfiguring..."
+_root_uuid=$(get_partition_uuid ${_root_partition})
+_sata_uuid=$(get_partition_uuid ${_sata_partition})
+sed -i "s/${_root_uuid}/${_sata_uuid}/g" ${_mount}/etc/fstab
+
+echo -e "\nCleanup..."
+umount ${_sata_partition} || true
+sync
+rm -rf ${_mount}
+
+# If the target device is A20-OLinuXino and there is MTD device, connected on spi0 bus
+# we presume that this is a board with both SATA and SPI.
+# On some boards there is booting issue from SATA, so a backup copy of the U-Boot must be written
+# to the SPI flash.
+if [[ "${_board}" == "a20-olinuxino" ]]; then
+    _mtd_device=""
+    while read line; do
+        grep -q "spi0.0" <<< ${line} && \
+            _mtd_device="/dev/$(cut -d':' -f1 <<< ${line})" && \
+            break
+    done <<< "$(cat /proc/mtd)"
+    [[ ! -z ${_mtd_device} ]] && u-boot-install ${_mtd_device} || echo "no spi flash found!!"
+fi
