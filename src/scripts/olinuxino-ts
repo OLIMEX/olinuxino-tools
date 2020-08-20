@@ -4,28 +4,54 @@
 LCD=$(grep -r "lcd-olinuxino-[147]" /proc/device-tree -a -h | tr -d '\0')
 [[ -z $LCD ]] && exit 0
 
+overlays=$(cat /boot/uEnv.txt)
+
 # Select transformation matrix
-case $LCD in
-	"olimex,lcd-olinuxino-4.3")
-		MATRIX="1.08 0.0 -0.04 0.0 1.14 -0.10 0.0 0.0 1.0"
-		;;
-	"olimex,lcd-olinuxino-7")
-		MATRIX="1.06 0.0 -0.03 0.0 1.11 -0.08 0.0 0.0 1.0"
-		;;
-	"olimex,lcd-olinuxino-10")
-		MATRIX="1.04 0.0 -0.03 0.0 1.09 -0.07 0.0 0.0 1.0"
-		;;
-	*)
-		# The LCD is not supported by this script
-		exit 0;
-esac
+if [[ $overlays == *"micro-i2c2-ar1021"* ]];
+then
+    case $LCD in
+        "olimex,lcd-olinuxino-4.3")
+                MATRIX="1.09 0.0 -0.04 0.0 1.17 -0.09 0.0 0.0 1.0"
+                ;;
+        "olimex,lcd-olinuxino-7")
+                MATRIX="1.05 0.0 -0.03 0.0 1.13 -0.08 0.0 0.0 1.0"
+                ;;
+        "olimex,lcd-olinuxino-10")
+                MATRIX="1.04 0.0 -0.03 0.0 1.09 -0.07 0.0 0.0 1.0"
+                ;;
+        *)
+                # The LCD is not supported by this script
+                exit 0;
+    esac    
+    
+    PRODUCT="ar1021 I2C Touchscreen"
+
+else
+    case $LCD in
+        "olimex,lcd-olinuxino-4.3")
+                MATRIX="1.08 0.0 -0.04 0.0 1.14 -0.10 0.0 0.0 1.0"
+                ;;
+        "olimex,lcd-olinuxino-7")
+                MATRIX="1.06 0.0 -0.03 0.0 1.11 -0.08 0.0 0.0 1.0"
+                ;;
+        "olimex,lcd-olinuxino-10")
+                MATRIX="1.04 0.0 -0.03 0.0 1.09 -0.07 0.0 0.0 1.0"
+                ;;
+        *)
+                # The LCD is not supported by this script
+                exit 0;
+    esac
+    
+    PRODUCT="1c25000.rtp"    
+    
+fi
 
 # Generate configuration file
 mkdir -p /etc/X11/xorg.conf.d
 tee > /etc/X11/xorg.conf.d/98-screen-calibration.conf << __EOF__
 Section "InputClass"
-	Identifier	"calibration"
-	MatchProduct	"1c25000.rtp"
-	Option		"TransformationMatrix" "$MATRIX"
+        Identifier      "calibration"
+        MatchProduct    "$PRODUCT"
+        Option          "TransformationMatrix" "$MATRIX"
 EndSection
 __EOF__
