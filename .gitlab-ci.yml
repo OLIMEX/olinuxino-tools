@@ -28,6 +28,8 @@ deploy:staging:
     - deploy
 
 deploy:repository:
+  only:
+    - master
   stage: deploy
   script:
     - reprepro -b /var/www/html/repository --ignore=wrongdistribution includedeb buster build/olinuxino-tools*.deb
