@@ -1,0 +1,4 @@
+sun50i-a64-spi0.dtbo
+spi0-spidev.dtbo
+sun50i-a64-i2c0.dtbo
+sun50i-a64-i2c1.dtbo
