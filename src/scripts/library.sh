@@ -8,6 +8,10 @@ function enable_overlays
 
 	# Detect board type
 	_board_id=$(get_board_id)
+	if [ "${_soc}" = "sun50i-a64" ] ; then
+		_board_id="a64"
+	fi
+
 	[[ -z ${_board_id} ]] && return 0
 
 	# update uEnv.txt with default overlays

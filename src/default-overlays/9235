@@ -10,3 +10,4 @@ sun7i-a20-uart5.dtbo
 sun7i-a20-uart6.dtbo
 sun7i-a20-uart7.dtbo
 sun7i-a20-can.dtbo
+micro-lcd-olinuxino.dtbo

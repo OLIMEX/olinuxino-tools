@@ -12,3 +12,4 @@ sun7i-a20-uart7.dtbo
 sun7i-a20-spi0.dtbo
 sun7i-a20-can.dtbo
 spi0-spiflash.dtbo
+lime2-lcd-olinuxino.dtbo
