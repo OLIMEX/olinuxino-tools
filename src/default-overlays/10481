@@ -1,0 +1,13 @@
+spi1-spidev.dtbo
+spi2-spidev.dtbo
+sun7i-a20-i2c2.dtbo
+sun7i-a20-spi0.dtbo
+sun7i-a20-spi1.dtbo
+sun7i-a20-spi2.dtbo
+sun7i-a20-uart3.dtbo
+sun7i-a20-uart4.dtbo
+sun7i-a20-uart5.dtbo
+sun7i-a20-uart6.dtbo
+sun7i-a20-uart7.dtbo
+sun7i-a20-spi0.dtbo
+spi0-spiflash.dtbo
