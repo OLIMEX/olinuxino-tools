@@ -128,7 +128,7 @@ u-boot-install ${_emmc_device}
 # we presume that this is a board with both eMMC and SPI.
 # On some boards there is booting issue from eMMC, so a backup copy of the U-Boot must be written
 # to the SPI flash.
-if [[ "${_board}" == "a20-olinuxino" ]]; then
+if [ "${_board}" == "a20-olinuxino" -o "${_board}" == "a10-olinuxino" ]; then
     _mtd_device=""
     while read line; do
         grep -q "spi0.0" <<< ${line} && \
