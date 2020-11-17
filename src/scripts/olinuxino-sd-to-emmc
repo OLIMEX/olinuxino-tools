@@ -32,6 +32,9 @@ case ${_soc} in
     "sun5i-a13")
         _board="a13-olinuxino"
         ;;
+    "sun4i-a10")
+        _board="a10-olinuxino"
+        ;;
     "sun7i-a20")
         _board="a20-olinuxino"
         ;;
