@@ -32,6 +32,9 @@ case ${_soc} in
     "sun5i-a13")
         _board="a13-olinuxino"
         ;;
+    "sun4i-a10")
+        _board="a10-olinuxino"
+        ;;
     "sun7i-a20")
         _board="a20-olinuxino"
         ;;
@@ -128,7 +131,7 @@ rm -rf ${_mount}
 # we presume that this is a board with both SATA and SPI.
 # On some boards there is booting issue from SATA, so a backup copy of the U-Boot must be written
 # to the SPI flash.
-if [[ "${_board}" == "a20-olinuxino" ]]; then
+if [ "${_board}" == "a20-olinuxino" -o "${_board}" == "a10-olinuxino" ]; then
     _mtd_device=""
     while read line; do
         grep -q "spi0.0" <<< ${line} && \
