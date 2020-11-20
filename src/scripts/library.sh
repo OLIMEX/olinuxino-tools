@@ -11,7 +11,7 @@ function enable_overlays
 	if [ "${_soc}" = "sun50i-a64" ] ; then
 		_board_id="a64"
 	fi
-	if [ "${_soc}" = "sun4i-a10" ] ; then
+	if [ -z ${_board_id} ] && [ "${_soc}" = "sun4i-a10" ] ; then
 		_board_id="a10"
 	fi
 
