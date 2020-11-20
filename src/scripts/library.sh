@@ -8,13 +8,19 @@ function enable_overlays
 
 	# Detect board type
 	_board_id=$(get_board_id)
-	if [ "${_soc}" = "sun50i-a64" ] ; then
-		_board_id="a64"
-	fi
-	if [ -z ${_board_id} ] && [ "${_soc}" = "sun4i-a10" ] ; then
-		_board_id="a10"
-	fi
 
+	# corrupted eeprom?
+	[[ "${_board_id}" = "0" ]] && _board_id=
+	[[ "${_board_id}" = "65535" ]] && _board_id=
+
+	if [ -z ${_board_id} ] ; then
+		if  [ "${_soc}" = "sun50i-a64" ] ; then
+			_board_id="a64"
+		fi
+		if [ "${_soc}" = "sun4i-a10" ] ; then
+			_board_id="a10"
+		fi
+	fi
 	[[ -z ${_board_id} ]] && return 0
 
 	# update uEnv.txt with default overlays
