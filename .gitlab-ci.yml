@@ -20,10 +20,10 @@ build:
 deploy:staging:
   stage: deploy
   script:
-    - reprepro -b /var/www/html/staging --ignore=wrongdistribution includedeb buster build/olinuxino-tools*.deb
-    - reprepro -b /var/www/html/staging --ignore=wrongdistribution includedeb bionic build/olinuxino-tools*.deb
-    - reprepro -b /var/www/html/staging --ignore=wrongdistribution includedeb focal build/olinuxino-tools*.deb
-    - reprepro -b /var/www/html/staging --ignore=wrongdistribution includedeb sid build/olinuxino-tools*.deb
+    - |
+      for repo in $REPOS ; do
+        reprepro -b /var/www/html/staging/ --ignore=wrongdistribution includedeb $repo build/olinuxino-tools*.deb
+      done
   tags:
     - deploy
 
@@ -32,9 +32,9 @@ deploy:repository:
     - master
   stage: deploy
   script:
-    - reprepro -b /var/www/html/repository --ignore=wrongdistribution includedeb buster build/olinuxino-tools*.deb
-    - reprepro -b /var/www/html/repository --ignore=wrongdistribution includedeb bionic build/olinuxino-tools*.deb
-    - reprepro -b /var/www/html/repository --ignore=wrongdistribution includedeb focal build/olinuxino-tools*.deb
-    - reprepro -b /var/www/html/repository --ignore=wrongdistribution includedeb sid build/olinuxino-tools*.deb
+    - |
+      for repo in $REPOS ; do
+        reprepro -b /var/www/html/repository/ --ignore=wrongdistribution includedeb $repo build/olinuxino-tools*.deb
+      done
   tags:
     - deploy
