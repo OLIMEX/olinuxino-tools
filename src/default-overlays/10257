@@ -9,3 +9,4 @@ sun7i-a20-uart4.dtbo
 sun7i-a20-uart7.dtbo
 sun7i-a20-can.dtbo
 som204-lcd-olinuxino.dtbo
+som204-emac.dtbo
