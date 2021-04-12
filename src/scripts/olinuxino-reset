@@ -1,0 +1,23 @@
+#!/bin/bash
+
+echo "Please wait..."
+
+# reset fdtoverlays in uEnv
+sed 's/^fdtoverlays=.*/fdtoverlays=/g' -i /boot/uEnv.txt
+
+# re-enable olinuxino-firstboot for next boot
+systemctl enable olinuxino-firstboot &>/dev/null
+
+sync
+
+read -n1 -p "Board must be rebooted to apply changes. Reboot now? " yn
+case $yn in
+  [Yy]*)
+    reboot
+    echo "reboot"
+    ;;
+  *)
+    echo ""
+    echo "Please reboot asap."
+    ;;
+esac

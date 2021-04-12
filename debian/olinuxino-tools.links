@@ -1,2 +1,3 @@
 /usr/lib/olinuxino/olinuxino-sd-to-emmc  /usr/sbin/olinuxino-sd-to-emmc
 /usr/lib/olinuxino/olinuxino-sd-to-sata  /usr/sbin/olinuxino-sd-to-sata
+/usr/lib/olinuxino/olinuxino-reset  /usr/sbin/olinuxino-reset
