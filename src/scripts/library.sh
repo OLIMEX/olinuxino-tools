@@ -33,6 +33,7 @@ function enable_overlays
 		done
 		if [ -n "${_overlays}" ] ; then
 			sed -i 's#^fdtoverlays=$#fdtoverlays='"${_overlays}"'#g' /boot/uEnv.txt
+			echo "overlay configuration updated" > /var/run/olinuxino-reboot-required
 		fi
 	fi
 }

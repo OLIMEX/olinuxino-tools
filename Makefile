@@ -11,3 +11,5 @@ install:
 	install -D -m 644 src/tweaks/91-olinuxino-sun4i-drm.conf $(DESTDIR)$(prefix)/share/X11/xorg.conf.d
 	install -d -m 755 $(DESTDIR)/etc/sysctl.d
 	install -D -m 644 src/tweaks/99-olinuxino-sysctl.conf $(DESTDIR)/etc/sysctl.d/99-olinuxino-sysctl.conf
+	install -d -m 755 $(DESTDIR)/etc/profile.d
+	install -D -m 755 src/profile.d/* $(DESTDIR)/etc/profile.d/
