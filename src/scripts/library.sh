@@ -21,6 +21,12 @@ function enable_overlays
 			_board_id="a10"
 		fi
 	fi
+	if [ -z ${_board_id} ] ; then
+		_board=$(get_board)
+		if [[ "${_board}" == "stm32mp1"* ]]; then
+			_board_id="${_board}"
+		fi
+	fi
 	[[ -z ${_board_id} ]] && return 0
 
 	# update uEnv.txt with default overlays
@@ -81,6 +87,10 @@ function get_soc
     for comp in $(cat "/proc/device-tree/compatible" | tr '\0' '\n'); do
 	    if [[ "$comp" == "allwinner,sun"* ]]; then
 		    SOC=$(cut -d',' -f2 <<< $comp)
+		    break
+	    fi
+	    if [[ "$comp" == "st,stm32mp1"* ]]; then
+                    SOC=stm32mp1
 		    break
 	    fi
     done
