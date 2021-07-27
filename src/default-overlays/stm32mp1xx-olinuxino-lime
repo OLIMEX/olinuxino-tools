@@ -1,7 +1,3 @@
-stm32mp1-i2c2.dtbo
-stm32mp1-i2c3.dtbo
-stm32mp1-i2c6.dtbo
 stm32mp1-spi4.dtbo
-stm32mp1-uart7.dtbo
 stm32mp1-usart1.dtbo
 stm32mp1-usart3.dtbo
