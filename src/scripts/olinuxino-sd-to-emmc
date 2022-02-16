@@ -109,7 +109,8 @@ if [ "${_board}" == "stm32mp1xx-olinuxino" ] ; then
            -c 4:rootfs \
            -p ${_emmc_device}
 else
-    sfdisk -q -d ${_root_device} | sfdisk -q --wipe=always ${_emmc_device}
+    # TODO fix
+    sfdisk -q -d ${_root_device} | sed 's/size=.*,//g' | sfdisk -q --wipe=always ${_emmc_device}
 fi
 
 echo -e "\nResizing partition..."
