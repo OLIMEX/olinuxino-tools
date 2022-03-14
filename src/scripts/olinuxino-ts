@@ -55,3 +55,16 @@ Section "InputClass"
         Option          "TransformationMatrix" "$MATRIX"
 EndSection
 __EOF__
+
+# педалщина
+LCD=$(grep -r "lcd-olinuxino-[147]" /proc/device-tree -a -h | tr -d '\0')
+[[ -z $LCD ]] && exit 0
+
+overlays=$(cat /boot/uEnv.txt)
+
+# Select transformation matrix
+if [[ $overlays == *"-gt911inv"* ]];
+then
+        /usr/bin/memtool mw -l 0x1C0C010  0x80000000 || :
+        /usr/bin/memtool mw -l 0x1C0C044  0xF0000006 || :
+fi
