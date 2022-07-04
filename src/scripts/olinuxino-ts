@@ -7,7 +7,7 @@ LCD=$(grep -r "lcd-olinuxino-[147]" /proc/device-tree -a -h | tr -d '\0')
 overlays=$(cat /boot/uEnv.txt)
 
 # Select transformation matrix
-if [[ $overlays == *"micro-i2c2-ar1021"* ]];
+if [[ $overlays == *"i2c2-ar1021"* ]];
 then
     case $LCD in
         "olimex,lcd-olinuxino-4.3")
