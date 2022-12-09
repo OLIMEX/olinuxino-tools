@@ -85,6 +85,8 @@ if [[ ${_available} -lt ${_required} ]]; then
     exit 1
 fi
 
+echo -en "This operation will overwrite any existing data on ${_sata_device}.\nAre you sure? (y/n) " && read -n1 ans && [[ "$ans" == "y" ]] && echo || exit;
+
 echo -e "\nUnmount target device..."
 umount ${_sata_partition} || true
 sync
