@@ -102,11 +102,9 @@ sync
 
 if [ "${_board}" == "stm32mp1xx-olinuxino" ] ; then
     sgdisk -o ${_emmc_device}
-    sgdisk --resize-table=128 -a 1 -n 1:34:545 \
-           -c 1:fsbl1 -n 2:546:1057 \
-           -c 2:fsbl2 -n 3:1058:5153 \
-           -c 3:ssbl -n 4:5154: \
-           -c 4:rootfs \
+    sgdisk --resize-table=128 -a 1 \
+           -n 1:2048:6143 -c 1:ssbl \
+           -n 4:6144: -c 4:rootfs \
            -p ${_emmc_device}
 else
     # TODO fix
