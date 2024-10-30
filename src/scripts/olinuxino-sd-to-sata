@@ -96,10 +96,13 @@ dd if=/dev/zero of=${_sata_device} bs=1M count=1 conv=sync,fsync 2>/dev/null
 sync
 
 # TODO fix
-sfdisk -q -d ${_root_device} | sed 's/size=.*,//g' | sfdisk -q --wipe=always ${_emmc_device}
+sfdisk -q -d ${_root_device} | sed 's/size=.*,//g' | sfdisk -q --wipe=always ${_sata_device}
+partprobe
 
 echo -e "\nResizing partition..."
 resize_partition ${_sata_partition}
+partprobe
+
 e2fsck -f -y ${_sata_partition}
 resize2fs ${_sata_partition}
 
